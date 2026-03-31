@@ -12,12 +12,24 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Load movie dataset & similarity model
-with open("model/movie_list.pkl", "rb") as f:
-    movies = pickle.load(f)
+@st.cache_resource(show_spinner="Booting Cinematic AI Engine...")
+def load_data():
+    try:
+        with open("model/movie_list.pkl", "rb") as f:
+            m = pickle.load(f)
+        with open("model/similarity.pkl", "rb") as f:
+            s = pickle.load(f)
+        return m, s
+    except Exception as e:
+        return None, None
 
-with open("model/similarity.pkl", "rb") as f:
-    similarity = pickle.load(f)
+movies, similarity = load_data()
+
+# Halt application completely if primary datasets are fatally missing
+if movies is None or similarity is None:
+    apply_custom_css() # Keep standard black UI
+    st.error("### 🚨 Critical System Error\nMachine Learning models failed to load. Please ensure `model/movie_list.pkl` and `model/similarity.pkl` are present.", icon="❌")
+    st.stop()
 
 def main():
     apply_custom_css()

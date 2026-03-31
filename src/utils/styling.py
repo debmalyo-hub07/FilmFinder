@@ -44,31 +44,31 @@ def create_movie_card_streamlit(movie_id, title, poster_url):
     # Render with Streamlit
     st.markdown(html, unsafe_allow_html=True)
 
-def create_recommendations_grid_streamlit(movies):
-    """Create a robust column-based grid for recommendations"""
+def create_recommendations_grid_streamlit(movies, cols_per_row=5):
+    """Create a robust column-based grid for recommendations that dynamically wraps rows"""
     if not movies or len(movies) == 0:
         st.warning("No movies found to display.")
         return None
 
-    # Determine number of columns based on standard layouts
-    num_cols = min(5, len(movies))
-    cols = st.columns(num_cols, gap="medium")
-    
     clicked_movie_id = None
 
-    for idx, movie in enumerate(movies[:num_cols]):
-        movie_id = movie.get('id', idx)
-        title = movie.get('title', 'Unknown Title')
-        poster_url = movie.get('poster', '')
+    # Slice strictly into rows of length `cols_per_row`
+    for i in range(0, len(movies), cols_per_row):
+        row_movies = movies[i:i + cols_per_row]
         
-        # Ensure we always have a poster structure
-        if not poster_url:
-            poster_url = f"https://via.placeholder.com/500x750/19222C/FFFFFF?text={title.replace(' ', '+')}"
+        # We always create full 5 columns to preserve CSS sizing width evenly
+        cols = st.columns(cols_per_row, gap="medium")
+        
+        for idx, movie in enumerate(row_movies):
+            movie_id = movie.get('id', idx)
+            title = movie.get('title', 'Unknown Title')
+            poster_url = movie.get('poster', '')
+            
+            if not poster_url:
+                poster_url = f"https://via.placeholder.com/500x750/19222C/FFFFFF?text={title.replace(' ', '+')}"
 
-        with cols[idx]:
-            # This renders the card HTML. 
-            # We rely on the absolute perfectly sized CSS elements inside it so columns don't jitter
-            create_movie_card_streamlit(movie_id, title, poster_url)
+            with cols[idx]:
+                create_movie_card_streamlit(movie_id, title, poster_url)
 
     return clicked_movie_id
 

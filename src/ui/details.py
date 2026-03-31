@@ -13,7 +13,8 @@ def show_movie_details(movie_id):
         movie_details = fetch_movie_details(movie_id)
 
     if not movie_details:
-        st.error("Unable to load movie details. The reels might be missing!")
+        st.toast("Network failure: External API dropped the connection.", icon="📉")
+        st.error("Unable to load movie details. The reels might be missing!", icon="❌")
         return
 
     # Extract dynamic properties
