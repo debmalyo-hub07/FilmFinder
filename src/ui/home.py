@@ -1,132 +1,52 @@
 import streamlit as st
+import time
 from src.recommender.engine import recommend
-from src.utils.styling import create_recommendations_grid_streamlit
-
+from src.utils.styling import create_recommendations_grid_streamlit, create_home_header
 
 def show_home_page(movies, similarity):
     # ===========================
-    # AMAZON PRIME VIDEO STYLE HEADER ✅
+    # PREMIUM HEADER SECTION
     # ===========================
-    st.markdown("""
-        <style>
-            /* Header container */
-            .custom-header {
-                background-color: #0F171E; 
-                padding: 18px;
-                border-radius: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-                margin-bottom: 20px;
-            }
-
-            /* Left side (logo + title) */
-            .header-left {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-            }
-
-            /* Logo circle */
-            .logo {
-                background-color: #00A8E1; 
-                color: white;
-                font-size: 22px;
-                font-weight: bold;
-                width: 46px;
-                height: 46px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-            }
-
-            /* Title text — made larger */
-            .header-title {
-                color: white;
-                font-size: 28px;  
-                font-weight: 900; 
-                letter-spacing: 1.2px;
-                line-height: 1.2;
-            }
-
-            /* Right side tagline */
-            .header-tagline {
-                color: #B0BEC5;
-                font-size: 15px;
-                font-weight: 500;
-                text-align: right;
-                max-width: 420px;
-            }
-        </style>
-
-        <div class="custom-header">
-            <div class="header-left">
-                <div class="logo">🎬</div>
-                <div class="header-title">Movie Recommender</div>
-            </div>
-            <div class="header-tagline">Your personal AI-powered movie discovery assistant</div>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown(create_home_header(), unsafe_allow_html=True)
 
     # ===========================
-    # MOVIE SEARCH SELECT BOX
+    # DYNAMIC SEARCH COMPONENT
     # ===========================
+    st.markdown('<div class="search-section">', unsafe_allow_html=True)
+    
     movie_list = movies['title'].values
     selected_movie = st.selectbox(
-        "🔍 Search or select a movie:",
-        movie_list,
-        index=None,  # No movie pre-selected
-        placeholder="🔍 Search or select a movie:"  # Placeholder text
+        label="Search Movie",
+        options=movie_list,
+        index=None,
+        placeholder="🔍 Type a movie title to discover similar gems...",
+        label_visibility="collapsed"
     )
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 
     # ===========================
-    # HANDLE GET RECOMMENDATIONS BUTTON ✅
+    # PRIMARY CTA BUTTON
     # ===========================
-    if st.button("🔍 Get Recommendations", use_container_width=True):
-        # Prevent empty string search
+    st.markdown('<div style="margin: 2rem 0;">', unsafe_allow_html=True)
+    if st.button("✨ Get Personalized Recommendations", use_container_width=True):
         if not selected_movie or selected_movie.strip() == "":
-            st.warning("Please select a movie to get recommendations 🎬")
+            st.warning("Please select a movie first to unlock your recommendations. 🎬")
         else:
-            with st.spinner("Finding perfect matches for you..."):
+            with st.spinner("Analyzing cinematic patterns..."):
+                # Minor deliberate delay to make it feel like intensive AI work
+                time.sleep(0.5) 
+                
                 raw_recommendations = recommend(selected_movie, movies, similarity)
 
-                # Process recommendations to ensure all needed data is present
                 processed_recommendations = []
 
                 for i, movie in enumerate(raw_recommendations):
                     try:
-                        # Get movie ID - try different possible keys
-                        movie_id = None
-                        for key in ['id', 'movie_id', 'tmdb_id', 'movieId']:
-                            if key in movie:
-                                movie_id = movie[key]
-                                break
-
-                        if movie_id is None:
-                            movie_id = i  # Use index as fallback
-
-                        # Get movie title - try different possible keys
-                        title = None
-                        for key in ['title', 'Title', 'original_title', 'movie_title']:
-                            if key in movie and movie[key]:
-                                title = movie[key]
-                                break
-
-                        if title is None:
-                            title = f"Unknown Movie {i}"
-
-                        # Get poster URL - try different possible keys
-                        poster_url = None
-                        for key in ['poster', 'poster_url', 'poster_path', 'Poster']:
-                            if key in movie and movie[key]:
-                                poster_url = movie[key]
-                                break
-
-                        if not poster_url:
-                            poster_url = ""
+                        # Extract universal identifiers seamlessly
+                        movie_id = next((movie[k] for k in ['id', 'movie_id', 'tmdb_id', 'movieId'] if k in movie), i)
+                        title = next((movie[k] for k in ['title', 'Title', 'original_title', 'movie_title'] if k in movie and movie[k]), f"Unknown Movie {i}")
+                        poster_url = next((movie[k] for k in ['poster', 'poster_url', 'poster_path', 'Poster'] if k in movie and movie[k]), "")
 
                         processed_recommendations.append({
                             'id': movie_id,
@@ -135,43 +55,28 @@ def show_home_page(movies, similarity):
                         })
 
                     except Exception as e:
-                        st.error(f"Error processing movie {i}: {e}")
-                        st.write(f"Movie data: {movie}")
+                        print(f"Error processing movie {i}: {e}") # Log silently
 
-                # Store processed recommendations in session state
                 st.session_state.recommended_movies = processed_recommendations
-
-                st.success(f"Top {len(processed_recommendations)} show recommendations")
+                
+    st.markdown('</div>', unsafe_allow_html=True)
 
     # ===========================
-    # DISPLAY RECOMMENDATIONS SECTION
+    # DISPLAY STUNNING RESULTS
     # ===========================
     if "recommended_movies" in st.session_state and len(st.session_state.recommended_movies) > 0:
-        st.markdown('''
-        <h2 style="text-align:center;">Movies You Might Love</h2>
-        ''', unsafe_allow_html=True)
+        st.markdown('<div class="recommendations-title">Matches You Will Love</div>', unsafe_allow_html=True)
 
-        # Use the Streamlit-based grid function
         try:
-            clicked_movie_id = create_recommendations_grid_streamlit(st.session_state.recommended_movies)
-
-            # Handle navigation if a movie was clicked
-            if clicked_movie_id:
-                st.query_params.page = "details"
-                st.query_params.movie_id = str(clicked_movie_id)
-                st.rerun()
+            create_recommendations_grid_streamlit(st.session_state.recommended_movies)
         except Exception as e:
-            st.error(f"Error creating movie grid: {e}")
-            st.write("Falling back to simple list:")
-            for movie in st.session_state.recommended_movies:
-                st.write(f"- {movie['title']} (ID: {movie['id']})")
+            st.error(f"Render Error: {e}")
 
     # ===========================
-    # SIMPLE FOOTER SECTION ✅
+    # MINIMALIST FOOTER
     # ===========================
     st.markdown("""
-        <hr style="margin-top:30px; margin-bottom:10px;">
-        <div style="text-align:center; padding:10px; font-size:14px; color:gray;">
-            © 2025 Movie Recommender | Built with ❤️ using Streamlit
+        <div style="text-align:center; padding-top:40px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-size: 0.9rem;">
+            © 2026 FilmFinder • Crafted with passion for cinema.
         </div>
     """, unsafe_allow_html=True)

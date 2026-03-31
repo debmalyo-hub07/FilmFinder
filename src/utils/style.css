@@ -1,913 +1,457 @@
-/* Root Variables for Amazon Prime Video Theme */
+/* FilmFinder Premium OTT Theme (Prime Video Inspired) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
-    --primary-bg: #0f171e;
-    --secondary-bg: #1a252f;
-    --card-bg: #232f3e;
-    --accent-color: #00A8E1;
-    --secondary-accent: #ff9900;
-    --primary-text: #ffffff;
-    --secondary-text: #aab7c4;
-    --hover-bg: #37475a;
-    --border-radius: 4px;
-    --border-radius-lg: 8px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.7);
-    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.8);
-    --gradient-overlay: linear-gradient(180deg, transparent 0%, rgba(15, 23, 30, 0.7) 50%, rgba(15, 23, 30, 1) 100%);
+    --bg-main: #0F171E;
+    --bg-secondary: #1A242F;
+    --bg-card: #19222C;
+    --accent: #00A8E1;
+    --accent-hover: #15bdf4;
+    --text-primary: #FFFFFF;
+    --text-muted: #AAB7C4;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --shadow-soft: 0 4px 6px rgba(0,0,0,0.3);
+    --shadow-glow: 0 8px 24px rgba(0, 168, 225, 0.15);
 }
 
-/* Reset and Base Styles */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+/* Base Overrides for Streamlit */
+.stApp {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-body {
-    background-color: var(--primary-bg);
-    color: var(--primary-text);
-    font-family: 'Amazon Ember', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+header { visibility: hidden !important; }
+footer { visibility: hidden !important; }
+
+/* Remove default padding from app body & apply animations */
+.block-container {
+    padding-top: 2rem !important;
+    padding-bottom: 3rem !important;
+    max-width: 1400px !important;
+    animation: pageLoad 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-/* Container Layouts */
-.main-container {
-    max-width: 1920px;
-    margin: 0 auto;
-    padding: 0;
+@keyframes pageLoad {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Header Section - Home Page */
-.header-section {
-    padding: 60px 4% 40px;
-    background: linear-gradient(180deg, rgba(15, 23, 30, 0) 0%, var(--primary-bg) 100%);
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb {
+    background: var(--bg-secondary);
+    border-radius: 4px;
 }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-.main-title {
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
-    font-weight: 700;
-    color: var(--primary-text);
-    margin-bottom: 8px;
-    letter-spacing: -0.01em;
+/* Typography */
+h1, h2, h3, h4, p, span {
+    color: var(--text-primary);
 }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-.main-title .highlight {
-    color: var(--accent-color);
+/* =========================================
+   HOME PAGE COMPONENTS
+   ========================================= */
+
+/* Hero Header */
+.hero-header {
+    background: linear-gradient(180deg, rgba(26,36,47,0.8) 0%, rgba(15,23,30,0) 100%);
+    padding: 4rem 2rem;
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    animation: fadeIn 0.8s ease-out;
 }
-
-.subtitle {
-    font-size: clamp(1rem, 2vw, 1.125rem);
-    color: var(--secondary-text);
+.hero-title {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 800;
+    margin: 0 0 1rem;
+    letter-spacing: -1px;
+}
+.hero-title span { color: var(--accent); }
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--text-muted);
     font-weight: 400;
     max-width: 600px;
-    margin: 0 auto 32px;
+    margin: 0 auto;
 }
 
-/* Search Container */
-.search-container {
+/* Form Interactivity (Input / Select) */
+.stSelectbox label {
+    display: none !important; /* Hide label to use placeholder elegantly */
+}
+.stSelectbox > div > div {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: var(--radius-md) !important;
+    color: var(--text-primary) !important;
+    min-height: 54px;
+    font-size: 1.1rem !important;
+    transition: var(--transition);
+}
+.stSelectbox > div > div:focus-within {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px rgba(0, 168, 225, 0.3) !important;
+}
+
+/* Primary CTA Button (Streamlit + Custom) */
+div.stButton {
     display: flex;
     justify-content: center;
-    margin: 32px 0;
-    padding: 0 4%;
+}
+div.stButton > button {
+    background: var(--accent) !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+    border-radius: var(--radius-md) !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+    padding: 1rem 3rem !important;
+    height: auto !important;
+    width: 100% !important;
+    max-width: 400px;
+    transition: var(--transition) !important;
+    box-shadow: var(--shadow-soft) !important;
+}
+div.stButton > button:hover {
+    background: var(--accent-hover) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--shadow-glow) !important;
+}
+div.stButton > button:active {
+    transform: translateY(0) !important;
 }
 
-.search-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 500px;
+/* Spinner override */
+.stSpinner > div > div {
+    border-top-color: var(--accent) !important;
 }
 
-.search-input {
-    width: 100%;
-    padding: 12px 20px;
-    font-size: 16px;
-    border: 1px solid rgba(170, 183, 196, 0.3);
-    border-radius: var(--border-radius);
-    background-color: rgba(35, 47, 62, 0.8);
-    color: var(--primary-text);
-    transition: var(--transition);
-    outline: none;
+
+/* =========================================
+   RECOMMENDATIONS GRID & CARDS
+   ========================================= */
+
+/* Parent Streamlit Column Reset */
+div[data-testid="column"] {
+    display: flex;
+    flex-direction: column;
 }
 
-.search-input:focus {
-    background-color: var(--card-bg);
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(0, 168, 225, 0.2);
-}
-
-/* Navigation Buttons */
-.nav-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background-color: transparent;
-    border: 1px solid rgba(170, 183, 196, 0.4);
-    border-radius: var(--border-radius);
-    color: var(--secondary-text);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: var(--transition);
-    margin-bottom: 24px;
-}
-
-.nav-button:hover {
-    color: var(--primary-text);
-    border-color: var(--accent-color);
-    background-color: rgba(0, 168, 225, 0.1);
-}
-
-.nav-button:before {
-    content: "←";
-    font-size: 16px;
-}
-
-/* Movie Details Page - Hero Banner Section */
-.movie-banner {
-    position: relative;
-    width: 100%;
-    height: 56.25vw; /* 16:9 aspect ratio */
-    max-height: 80vh;
-    min-height: 500px;
-    overflow: hidden;
-    margin-bottom: -100px; /* Overlap with content below */
-}
-
-.movie-banner-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top;
-}
-
-.movie-banner-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        transparent 50%,
-        rgba(15, 23, 30, 0.7) 70%,
-        rgba(15, 23, 30, 0.95) 85%,
-        var(--primary-bg) 100%
-    );
-}
-
-.movie-banner-content {
-    position: absolute;
-    bottom: 150px;
-    left: 4%;
-    right: 4%;
-    z-index: 2;
-    max-width: 800px;
-}
-
-/* Movie Details Container */
-.movie-details-wrapper {
-    position: relative;
-    z-index: 3;
-    padding: 0 4%;
-    background-color: var(--primary-bg);
-}
-
-.movie-details-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Movie Info Section */
-.movie-info-main {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 48px;
-    margin-bottom: 48px;
-    padding-top: 40px;
-}
-
-@media (max-width: 768px) {
-    .movie-info-main {
-        grid-template-columns: 1fr;
-        gap: 24px;
-        padding-top: 20px;
-    }
-}
-
-/* Movie Poster */
-.movie-poster-sidebar {
-    position: relative;
-    width: 240px;
-    margin: 0 auto;
-}
-
-.movie-poster-sidebar img {
-    width: 100%;
-    aspect-ratio: 2/3;
-    object-fit: cover;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-lg);
-}
-
-/* Movie Title and Meta */
-.movie-header {
-    margin-bottom: 24px;
-}
-
-.movie-title-main {
-    font-size: clamp(2rem, 4vw, 3rem);
+.recommendations-title {
+    text-align: center;
+    font-size: 2rem;
     font-weight: 700;
-    color: var(--primary-text);
-    line-height: 1.1;
-    margin-bottom: 16px;
+    margin-bottom: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
 }
 
-.movie-meta-info {
+/* The Card Wrapper */
+.movie-card-wrapper {
+    background-color: var(--bg-card);
+    border-radius: var(--radius-md);
+    overflow: hidden;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 16px;
-    font-size: 16px;
-    color: var(--secondary-text);
-    margin-bottom: 20px;
-}
-
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.rating-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--secondary-accent);
-    font-weight: 600;
-}
-
-.rating-badge::before {
-    content: "⭐";
-    font-size: 16px;
-}
-
-.match-score {
-    color: var(--accent-color);
-    font-weight: 600;
-    background: linear-gradient(135deg, var(--accent-color), #0073AA);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Genres Section */
-.genres-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 24px;
-}
-
-.genre-pill {
-    padding: 6px 14px;
-    background-color: rgba(0, 168, 225, 0.15);
-    border: 1px solid rgba(0, 168, 225, 0.3);
-    border-radius: 20px;
-    font-size: 14px;
-    color: var(--accent-color);
-    font-weight: 500;
+    flex-direction: column;
+    height: 100%;
+    /* min-height ensures uniform vertical alignment across columns */
+    min-height: 380px; 
     transition: var(--transition);
-}
-
-.genre-pill:hover {
-    background-color: rgba(0, 168, 225, 0.25);
-    border-color: var(--accent-color);
-    color: #ffffff;
-}
-
-/* Action Buttons Section */
-.action-buttons-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 32px;
-}
-
-.btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 28px;
-    background: linear-gradient(135deg, var(--accent-color), #0073AA);
-    color: white;
-    border: none;
-    border-radius: var(--border-radius);
-    font-size: 16px;
-    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.03);
+    position: relative;
     cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none;
-    box-shadow: 0 2px 8px rgba(0, 168, 225, 0.3);
+    box-shadow: var(--shadow-soft);
 }
 
-.btn-primary:hover {
-    background: linear-gradient(135deg, #0073AA, #005580);
-    transform: translateY(-2px);
+.movie-card-wrapper:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-glow);
+    border-color: rgba(0, 168, 225, 0.4);
+    z-index: 10;
+}
+
+/* Aspect Ratio Poster */
+.poster-container {
+    width: 100%;
+    position: relative;
+    padding-top: 150%; /* 2:3 Aspect Ratio Hack ensures PERFECT alignment always */
+    background-color: #111;
+    overflow: hidden;
+}
+
+.poster-container img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.movie-card-wrapper:hover .poster-container img {
+    transform: scale(1.06); /* slow zoom on hover */
+}
+
+/* Content Area inside Card */
+.card-content {
+    padding: 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Pushes button to bottom */
+    justify-content: space-between;
+}
+
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 1.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 2.8em; /* Force height so 1-line vs 2-line titles align */
+}
+
+/* Secondary Button inside Card */
+.btn-details {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0.7rem;
+    background-color: rgba(255,255,255,0.08);
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    border: 1px solid transparent;
+}
+
+.btn-details:hover {
+    background-color: var(--accent);
+    color: var(--text-primary);
     box-shadow: 0 4px 12px rgba(0, 168, 225, 0.4);
 }
 
-.btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    background-color: rgba(170, 183, 196, 0.2);
-    color: white;
-    border: 1px solid rgba(170, 183, 196, 0.3);
-    border-radius: var(--border-radius);
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
+
+/* =========================================
+   MOVIE DETAILS VIEW
+   ========================================= */
+
+/* Back button in details page */
+button.back-btn {
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    color: var(--text-muted) !important;
+    width: auto !important;
+    padding: 0.5rem 1rem !important;
+    margin-bottom: 2rem !important;
+    max-width: 200px;
+    transition: var(--transition) !important;
+}
+button.back-btn:hover {
+    background: rgba(255,255,255,0.1) !important;
+    border-color: var(--text-primary) !important;
+    color: var(--text-primary) !important;
+    box-shadow: none !important;
 }
 
-.btn-secondary:hover {
-    background-color: rgba(170, 183, 196, 0.3);
-    border-color: var(--accent-color);
-    transform: translateY(-1px);
-}
-
-.btn-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    background-color: rgba(0, 168, 225, 0.1);
-    color: var(--accent-color);
-    border: 2px solid rgba(0, 168, 225, 0.3);
-    border-radius: 50%;
-    font-size: 20px;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.btn-icon:hover {
-    background-color: rgba(0, 168, 225, 0.2);
-    border-color: var(--accent-color);
-    color: #ffffff;
-    transform: scale(1.05);
-}
-
-/* Overview Section */
-.movie-overview {
-    margin-bottom: 48px;
-}
-
-.section-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--primary-text);
-    margin-bottom: 16px;
+/* Backdrop */
+.details-hero {
     position: relative;
-}
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 40px;
-    height: 2px;
-    background: linear-gradient(135deg, var(--accent-color), #0073AA);
-    border-radius: 1px;
-}
-
-.overview-text {
-    font-size: 16px;
-    line-height: 1.7;
-    color: var(--secondary-text);
-    max-width: 800px;
-}
-
-/* Cast and Crew Section */
-.cast-crew-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
-    margin-bottom: 48px;
-}
-
-@media (max-width: 768px) {
-    .cast-crew-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
-    }
-}
-
-.info-section {
-    margin-bottom: 24px;
-    padding: 20px;
-    background-color: var(--card-bg);
-    border-radius: var(--border-radius-lg);
-    border-left: 4px solid var(--accent-color);
-}
-
-.info-label {
-    font-size: 14px;
-    color: var(--accent-color);
-    margin-bottom: 8px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.info-value {
-    font-size: 16px;
-    color: var(--primary-text);
-    line-height: 1.5;
-}
-
-/* Movies Grid Layout - Home Page */
-.movies-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-    padding: 0 4% 48px;
-}
-
-@media (min-width: 1400px) {
-    .movies-grid {
-        grid-template-columns: repeat(6, 1fr);
-    }
-}
-
-@media (max-width: 1024px) {
-    .movies-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
-}
-
-@media (max-width: 640px) {
-    .movies-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-    }
-}
-
-@media (max-width: 480px) {
-    .movies-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* Movie Card */
-.movie-card {
-    position: relative;
-    background-color: var(--card-bg);
-    border-radius: var(--border-radius);
+    width: 100%;
+    height: 60vh;
+    min-height: 400px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    cursor: pointer;
-    transition: var(--transition);
-    aspect-ratio: 2/3;
-    border: 1px solid rgba(0, 168, 225, 0.1);
+    margin-bottom: -200px; /* Overlap content */
+    box-shadow: var(--shadow-soft);
 }
 
-.movie-card:hover {
-    transform: scale(1.05);
-    z-index: 10;
-    box-shadow: 0 8px 25px rgba(0, 168, 225, 0.3);
-    border-color: var(--accent-color);
-}
-
-.movie-card .movie-poster {
+.details-hero img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: top;
 }
 
-.movie-card .movie-overlay {
+.details-gradient {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 16px 12px 12px;
-    background: linear-gradient(to top, rgba(15, 23, 30, 0.95), transparent);
-    opacity: 0;
+    inset: 0;
+    background: linear-gradient(0deg, var(--bg-main) 0%, rgba(15,23,30,0.85) 45%, rgba(15,23,30,0.2) 100%);
+}
+
+.details-content-row {
+    position: relative;
+    z-index: 5;
+    padding: 0 2rem;
+}
+
+.details-poster {
+    width: 100%;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-glow);
+    border: 1px solid rgba(255,255,255,0.1);
     transition: var(--transition);
 }
-
-.movie-card:hover .movie-overlay {
-    opacity: 1;
+.details-poster:hover {
+    transform: scale(1.02);
 }
 
-.movie-card .movie-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--primary-text);
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.details-title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    line-height: 1.1;
 }
 
-/* Results Header */
-.results-header {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--primary-text);
-    margin: 32px 0 24px;
-    padding: 0 4%;
-    position: relative;
+.details-meta {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.results-header::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 4%;
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(135deg, var(--accent-color), var(--secondary-accent));
-    border-radius: 2px;
-}
-
-/* Streamlit Overrides */
-.stApp {
-    background-color: var(--primary-bg);
-}
-
-.stButton > button {
-    background: linear-gradient(135deg, var(--accent-color), #0073AA) !important;
-    color: white !important;
-    padding: 12px 24px !important;
-    border-radius: var(--border-radius) !important;
-    border: none !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    transition: var(--transition) !important;
-    text-transform: none !important;
-    box-shadow: 0 2px 8px rgba(0, 168, 225, 0.3) !important;
-}
-
-.stButton > button:hover {
-    background: linear-gradient(135deg, #0073AA, #005580) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(0, 168, 225, 0.4) !important;
-}
-
-.stSelectbox label {
-    color: var(--primary-text) !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-}
-
-.stSelectbox > div > div {
-    background-color: var(--card-bg) !important;
-    border-color: rgba(0, 168, 225, 0.3) !important;
-    color: var(--primary-text) !important;
-    border-radius: var(--border-radius) !important;
-}
-
-.stSelectbox > div > div:focus {
-    border-color: var(--accent-color) !important;
-    box-shadow: 0 0 0 2px rgba(0, 168, 225, 0.2) !important;
-}
-
-/* Loading Animation */
-.loading-spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(0, 168, 225, 0.3);
-    border-top: 2px solid var(--accent-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--primary-bg);
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, var(--accent-color), #0073AA);
+.meta-pill {
+    padding: 4px 12px;
+    background: rgba(255,255,255,0.08);
     border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text-primary);
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #0073AA, #005580);
+.meta-rating {
+    color: #F5C518; /* IMDB Yellow */
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.1rem;
 }
 
-/* Accessibility */
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
+/* Cast & Crew */
+.crew-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+.crew-box {
+    background: rgba(255,255,255,0.03);
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--accent);
+}
+.crew-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+}
+.crew-value {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Overview Box & New Extensions */
+.overview-box {
+    background: var(--bg-secondary);
+    padding: 2.5rem;
+    border-radius: var(--radius-md);
+    margin-top: 3rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.overview-box h3 {
+    margin-top: 0;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+.overview-box p {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+}
+
+.details-tagline {
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    font-weight: 500;
+}
+
+.financial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+.financial-col {
+    display: flex;
+    flex-direction: column;
+}
+.financial-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.financial-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Trailer Video Embed */
+.trailer-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
+    border-radius: var(--radius-md);
+    margin-top: 2.5rem;
+    box-shadow: var(--shadow-glow);
+    border: 1px solid rgba(255,255,255,0.1);
 }
-
-/* Focus States */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible {
-    outline: 2px solid var(--accent-color);
-    outline-offset: 2px;
+.trailer-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
 }
 
 /* Animations */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* Responsive Typography */
-@media (max-width: 640px) {
-    .movie-title-main {
-        font-size: 24px;
-    }
-
-    .section-title {
-        font-size: 18px;
-    }
-
-    .overview-text {
-        font-size: 14px;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-}
-
-/* Additional Prime Video specific elements */
-.prime-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    background: linear-gradient(135deg, var(--accent-color), #0073AA);
-    color: white;
-    font-size: 12px;
-    font-weight: 600;
-    border-radius: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.content-rating {
-    display: inline-block;
-    padding: 2px 6px;
-    background-color: rgba(170, 183, 196, 0.2);
-    color: var(--secondary-text);
-    font-size: 12px;
-    font-weight: 600;
-    border-radius: 2px;
-    border: 1px solid rgba(170, 183, 196, 0.3);
-}
-
-.quality-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 6px;
-    background-color: rgba(255, 153, 0, 0.2);
-    color: var(--secondary-accent);
-    font-size: 11px;
-    font-weight: 700;
-    border-radius: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
-
-/* ===============================
-   FINAL OVERRIDES FOR CONSISTENT CARD HEIGHT & BUTTON ALIGN
-   DO NOT CHANGE COLORS — only structural rules here.
-   =============================== */
-
-/* Make sure the HTML cards (movie-card) behave as columns in the grid,
-   and that poster area keeps a fixed aspect ratio so every card height is consistent. */
-
-.movies-grid {
-    /* keep your padding/gap consistent */
-    gap: 16px;
-    padding: 0 4% 48px;
-}
-
-/* make movie-card a real flex column so title + button live together */
-.movie-card {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    align-items: stretch !important;
-    height: 100% !important;
-    min-height: 360px !important; /* adjust if you want larger/smaller cards */
-    aspect-ratio: unset !important; /* disable earlier aspect-ratio so overrides take effect */
-    background-color: var(--card-bg) !important;
-}
-
-/* Force posters to use same aspect ratio so card heights match */
-.movie-card .movie-poster {
-    width: 100% !important;
-    aspect-ratio: 2 / 3 !important;
-    object-fit: cover !important;
-    flex-shrink: 0 !important;
-    display: block !important;
-    height: auto !important;
-}
-
-/* overlay should participate in the flex layout (no absolute positioning) */
-.movie-card .movie-overlay {
-    position: relative !important;
-    opacity: 1 !important; /* show overlay area by default (we style inside) */
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    padding: 12px !important;
-    background: linear-gradient(to top, rgba(15, 23, 30, 0.95), rgba(15, 23, 30, 0.0)) !important;
-    box-sizing: border-box !important;
-    flex-grow: 1 !important;
-}
-
-/* Title reserve */
-.movie-card .movie-title {
-    min-height: 36px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    padding: 6px 4px !important;
-}
-
-/* Anchor-styled button placed inside the same card DOM so CSS can align it */
-.movie-card a.show-details-btn {
-    display: inline-block !important;
-    width: 100% !important;
-    text-align: center !important;
-    padding: 12px 0 !important;
-    border-radius: var(--border-radius) !important;
-    text-decoration: none !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    color: white !important;
-
-    /* match Streamlit button gradient exactly */
-    background: linear-gradient(135deg, var(--accent-color), #0073AA) !important;
-    box-shadow: 0 2px 8px rgba(0, 168, 225, 0.3) !important;
-    transition: var(--transition) !important;
-}
-
-/* hover matches stButton hover */
-.movie-card a.show-details-btn:hover {
-    background: linear-gradient(135deg, #0073AA, #005580) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(0, 168, 225, 0.4) !important;
-}
-
-/* Force the anchor/button to stick to bottom of overlay/card */
-.movie-card .movie-overlay {
-    margin-top: auto !important;
-}
-
-/* If an actual Streamlit button remains inside the DOM, ensure it also sits at bottom */
-.movie-card .stButton {
-    margin-top: auto !important;
-}
-
-/* small responsive tweak */
-@media (max-width: 768px) {
-    .movie-card { min-height: 320px !important; }
-    .movie-card .movie-poster { aspect-ratio: 2 / 3 !important; }
-}
-
-/* ===== Fix movie card alignment ===== */
-
-/* Make Streamlit card containers consistent */
-.css-1r6slb0, .stContainer, [data-testid="stVerticalBlock"] {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-/* Poster takes fixed space */
-.stImage > img {
-    aspect-ratio: 2 / 3;
-    object-fit: cover;
-    width: 100%;
-    border-radius: 8px;
-}
-
-/* Title should not push button unevenly */
-.movie-title {
-    min-height: 40px;       /* reserve space for 2 lines */
-    text-align: center;
-    font-size: 14px;
-    margin: 6px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Button always at bottom */
-div.stButton {
-    margin-top: auto;       /* push it down */
-}
-
-div.stButton > button {
-    width: 100%;
-    background-color: #00A8E1 !important; /* Amazon Prime blue */
-    color: white !important;
-    font-weight: 600;
-    border-radius: 6px;
-    margin-top: 8px;
-}
-
-/* ================== STREAMLIT MOVIE CARD FIX ================== */
-.movie-card-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    height: 100%;
-    padding: 6px;
-}
-
-.movie-poster-wrapper {
-    width: 100%;
-    aspect-ratio: 2 / 3;
-    overflow: hidden;
-    border-radius: 8px;
-    background: #111; /* fallback if no poster */
-}
-
-.movie-poster-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border-radius: 8px;
-}
-
-.movie-title {
-    min-height: 40px; /* keeps alignment consistent */
-    text-align: center;
-    font-size: 14px;
-    margin: 8px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Align the button at bottom */
-div.stButton {
-    margin-top: auto;
-}
-
-/* Show Details button */
-.details-button {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 8px 0;
-    background-color: #00A8E1; /* Prime Video blue */
-    color: white !important;
-    text-decoration: none;
-    font-weight: 600;
-    border-radius: 6px;
-    margin-top: 8px;
-    transition: background-color 0.2s ease;
-}
-
-.details-button:hover {
-    background-color: #007EA7; /* darker hover */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
 }

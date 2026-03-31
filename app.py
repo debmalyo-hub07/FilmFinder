@@ -27,7 +27,6 @@ def main():
     movie_id = query_params.get("movie_id", None)
 
     if page == "details" and movie_id:
-        st.markdown('<h1 class="main-title">🎬 Movie Details</h1>', unsafe_allow_html=True)
         show_movie_details(int(movie_id))
     else:
         show_home_page(movies, similarity)
